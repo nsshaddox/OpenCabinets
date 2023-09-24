@@ -1,34 +1,25 @@
 <template>
-  <button @click="activeTab = 'ProjectTab'">Project</button>
-  <button @click="activeTab = 'TemplatesTab'">Templates</button>
-  <button @click="activeTab = 'OptimizerTab'">Optimizer</button>
-
-  <KeepAlive>
-    <component :is="activeTab" />
-  </KeepAlive>
+    <Tabs></Tabs>
 </template>
 
 <script>
-  import ProjectTab from './components/ProjectTab.vue'
-  import TemplatesTab from './components/TemplatesTab.vue'
-  import OptimizerTab from './components/OptimizerTab.vue'
+  import Tabs from './components/TabObject.vue'
+
 
   export default {
-    name: 'App',
+    name: 'TabObject',
     data() {
       return {
-        activeTab: 'ProjectTab' //Component name
+        activeTab: 'TemplatesTab' //Component name
       }
     },
     components: {
-      ProjectTab,
-      TemplatesTab,
-      OptimizerTab
+      Tabs
     }
   }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -37,5 +28,4 @@
   color: #2c3e50;
   margin-top: 60px;
 }
-
 </style>
