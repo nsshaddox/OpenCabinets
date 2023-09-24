@@ -3,7 +3,7 @@
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
       <div class="button-set">
         <button @click="addRow(index)" class="add-cabinet">add</button>
-        <button @click="toggleTable(index)" class="show-cabinet"><b>{{ template.Name }}</b></button>
+        <button @click="toggleTable(index)" class="show-cabinet"><b style="margin-left: 5px;">{{ getButtonText(index) }}</b></button>
         <button @click="removeRow(index)" class="delete-cabinet">delete</button>
       </div>
       <table v-if="visibleTables[index]">
@@ -22,9 +22,7 @@
           </template>
         </tr>
       </table>
-  
     </div>
-
   </div>
 </template>
 
@@ -49,6 +47,22 @@ import standardTemplates from './templates/standardTemplates.json';
       },
       addRow() {
 
+      },
+      getButtonText(index) {
+        const data = this.templates[index].MetaData;
+        const spacer = ' || ';
+        let result = '';
+
+        result += data.Quantity + spacer;
+        result += this.templates[index].Name + spacer;
+        result += data.Style + spacer;
+        result += `W: ${data.Width}` + spacer;
+        result += `D: ${data.Depth}` + spacer;
+        result += `H: ${data.Height}` + spacer;
+        result += `Inner: ${data.InnerMaterial}` + spacer;
+        result += `Outer: ${data.OuterMaterial}`;
+
+        return result;
       }
     },
   }
@@ -68,9 +82,24 @@ import standardTemplates from './templates/standardTemplates.json';
   margin-bottom: 0px;
 }
 
-.add-cabinet,
-.show-cabinet,
-.delete-cabinet {
+
+.show-cabinet {
+  height: 20px;
+  padding: 0 0;
+  background-color: #1ab6ac;
+  color: #ffffff;
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.delete-cabinet,
+.add-cabinet{
   height: 20px;
   padding: 0 0;
   background-color: #1ab6ac;
@@ -90,6 +119,7 @@ import standardTemplates from './templates/standardTemplates.json';
   min-width: 0;
   margin-right: 3px;
   margin-left: 3px;
+  text-align: right;
 }
 
 .add-cabinet {
