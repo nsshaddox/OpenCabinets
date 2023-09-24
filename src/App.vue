@@ -1,82 +1,41 @@
 <template>
-  <div>
-    <div class="tabs">
-      <Tab
-        v-for="tab in tabs"
-        :key="tab.title"
-        :title="tab.title"
-        @select="selectTab"
-      />
-    </div>
-    
-    <!-- Tab Contents -->
-    <div v-if="selectedTab === 'Tab 1'" class="tab-content">
-      <!-- Content for Tab 1 -->
-    </div>
-    
-    <div v-if="selectedTab === 'Tab 2'" class="tab-content">
-      <TemplatesPage :items="items"/>
-    </div>
+  <button @click="activeTab = 'ProjectTab'">Project</button>
+  <button @click="activeTab = 'TemplatesTab'">Templates</button>
+  <button @click="activeTab = 'OptimizerTab'">Optimizer</button>
 
-    
-    <div v-if="selectedTab === 'Tab 3'" class="tab-content">
-      <!-- Content for Tab 3 -->
-    </div>
-  </div>
+  <KeepAlive>
+    <component :is="activeTab" />
+  </KeepAlive>
 </template>
 
 <script>
-import Tab from './components/TabOptions.vue';
-import TemplatesPage from './components/TemplatesPage.vue';
-import jsonData from './templates/standard/data.json';
+  import ProjectTab from './components/ProjectTab.vue'
+  import TemplatesTab from './components/TemplatesTab.vue'
+  import OptimizerTab from './components/OptimizerTab.vue'
 
-export default {
-  components: {
-    Tab,
-    TemplatesPage
-    // If you want to use TemplatesTab as a separate component, import and register it here too.
-  },
-  data() {
-    return {
-      tabs: [
-        { title: 'Tab 1' },
-        { title: 'Tab 2' },
-        { title: 'Tab 3' }
-      ],
-      selectedTab: 'Tab 1',
-      items: jsonData.map(item => ({ ...item, showData: false }))
-    };
-  },
-
-  methods: {
-    selectTab(title) {
-      this.selectedTab = title;
+  export default {
+    name: 'App',
+    data() {
+      return {
+        activeTab: 'ProjectTab' //Component name
+      }
     },
-    displayData(/*item*/) {
-      // Logic to display the JSON object data
-    },
-    deleteRow(id) {
-      this.items = this.items.filter(item => item.id !== id);
+    components: {
+      ProjectTab,
+      TemplatesTab,
+      OptimizerTab
     }
   }
-}
 </script>
 
 <style>
-.tabs {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-}
-.tab-content {
-  padding: 20px;
-}
-
-.data-display {
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f5f5f5;
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 
 </style>
