@@ -26,14 +26,19 @@
 </template>
 
 <script>
-import projectTemplates from './templates/projectTemplates.json';
+// import projectTemplates from './templates/projectTemplates.json';
 
   export default {
     name: "ProjectTab",
+    props: {
+      templates: {
+        templates: Array,
+        default: () => []
+      },
+    },
     data() {
       return {
-        templates: projectTemplates,
-        visibleTables: new Array(projectTemplates.length).fill(true)
+        visibleTables: new Array(this.templates.length).fill(true)
       }
     },
     methods: {
@@ -42,7 +47,7 @@ import projectTemplates from './templates/projectTemplates.json';
         console.log(this.visibleTables[index]);
       },
       removeRow(index) {
-        this.templates.splice(index, 1);
+        this.$emit('remove-template-p', index);
       },
       getButtonText(index) {
         const data = this.templates[index].MetaData;

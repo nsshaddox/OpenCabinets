@@ -9,7 +9,6 @@
     name: 'TabObject',
     data() {
       return {
-        activeTab: 'TemplatesTab' //Component name
       }
     },
     components: {

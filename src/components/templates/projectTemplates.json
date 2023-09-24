@@ -1,0 +1,24 @@
+[
+  {
+    "Name": "Double Door",
+    "MetaData": {
+      "Style": "Euro",
+      "Quantity": 1,
+      "Width": 16,
+      "Depth": 24,
+      "Height": 30,
+      "Description": "Kitchen Base Cabinet",
+      "InnerMaterial": "Melamine",
+      "OuterMaterial": "Oak"
+    },
+    "Components": [
+      [1, "Webs", 8, 14.5, 0.75, "Melamine", "Split @ 96mm"],
+      [0, "Top Panel", 24, 14.5, 0.75, "Melamine", "Rounded edges"],
+      [1, "Bottom Panel", 24, 14.5, 0.75, "Melamine", ""],
+      [2, "Side Panel", 24, 30.0, 0.75, "Melamine", ""],
+      [1, "Back Panel", 15.5, 29.5, 0.25, "Melamine", ""],
+      [2, "Shelves", 23, 14.5, 0.75, "Melamine", "Adjustable height"],
+      [2, "Door Panels", 7.875, 29.75, 0.75, "Oak", "Euro Style"]
+    ]
+  }
+]

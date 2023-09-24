@@ -2,7 +2,7 @@
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
       <div class="button-set">
-        <button @click="addRow(index)" class="add-cabinet">add</button>
+        <button @click="addTemplate(index)" class="add-cabinet">add</button>
         <button @click="toggleTable(index)" class="show-cabinet"><b style="margin-left: 5px;">{{ getButtonText(index) }}</b></button>
         <button @click="removeRow(index)" class="delete-cabinet">delete</button>
       </div>
@@ -27,15 +27,20 @@
 </template>
 
 <script>
-import standardTemplates  from './templates/standardTemplates.json';
-import projectTemplates   from './templates/projectTemplates.json'
+// import standardTemplates  from './templates/standardTemplates.json';
+// import projectTemplates   from './templates/projectTemplates.json'
 
   export default {
+    props: {
+      templates: {
+        type: Array,
+        default: () => []
+      },
+    },
     name: "TemplatesTab",
     data() {
       return {
-        templates: standardTemplates,
-        visibleTables: new Array(standardTemplates.length).fill(true)
+        visibleTables: new Array(this.templates.length).fill(true)
       }
     },
     methods: {
@@ -44,11 +49,10 @@ import projectTemplates   from './templates/projectTemplates.json'
         console.log(this.visibleTables[index]);
       },
       removeRow(index) {
-        this.templates.splice(index, 1);
+        this.$emit('remove-template-t', index);
       },
-      addRow(index) {
-        const pTemplates = projectTemplates;
-        pTemplates.push(this.templates[index]);
+      addTemplate(index) {
+        this.$emit('add-template', this.templates[index]);
       },
       getButtonText(index) {
         const data = this.templates[index].MetaData;
