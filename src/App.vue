@@ -5,7 +5,6 @@
 <script>
   import Tabs from './components/TabObject.vue'
 
-
   export default {
     name: 'TabObject',
     data() {
@@ -19,9 +18,10 @@
   }
 </script>
 
-<style scoped>
+<style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Calibri, Avenir, Helvetica, Arial, sans-serif; */
+  font-family: 'Trebuchet MS', Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;

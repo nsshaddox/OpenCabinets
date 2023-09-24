@@ -27,14 +27,15 @@
 </template>
 
 <script>
-import standardTemplates from './templates/standardTemplates.json';
+import standardTemplates  from './templates/standardTemplates.json';
+import projectTemplates   from './templates/projectTemplates.json'
 
   export default {
     name: "TemplatesTab",
     data() {
       return {
         templates: standardTemplates,
-        visibleTables: new Array(standardTemplates.length).fill(false)
+        visibleTables: new Array(standardTemplates.length).fill(true)
       }
     },
     methods: {
@@ -45,8 +46,9 @@ import standardTemplates from './templates/standardTemplates.json';
       removeRow(index) {
         this.templates.splice(index, 1);
       },
-      addRow() {
-
+      addRow(index) {
+        const pTemplates = projectTemplates;
+        pTemplates.push(this.templates[index]);
       },
       getButtonText(index) {
         const data = this.templates[index].MetaData;
