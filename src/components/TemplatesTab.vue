@@ -2,9 +2,13 @@
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
       <div class="button-set">
-        <button @click="addTemplate(index)" class="add-cabinet">add</button>
+        <button @click="addTemplate(index)" class="add-cabinet">
+          <font-awesome-icon icon="fa-solid fa-plus" stroke="" />
+        </button>
         <button @click="toggleTable(index)" class="show-cabinet"><b style="margin-left: 5px;">{{ getButtonText(index) }}</b></button>
-        <button @click="removeRow(index)" class="delete-cabinet">delete</button>
+        <button @click="removeRow(index)" class="delete-cabinet">
+          <font-awesome-icon icon="fa-solid fa-gear" stroke="" />
+        </button>
       </div>
       <table v-if="visibleTables[index]">
         <tr>
@@ -27,9 +31,6 @@
 </template>
 
 <script>
-// import standardTemplates  from './templates/standardTemplates.json';
-// import projectTemplates   from './templates/projectTemplates.json'
-
   export default {
     props: {
       templates: {
@@ -88,7 +89,6 @@
   margin-bottom: 0px;
 }
 
-
 .show-cabinet {
   height: 20px;
   padding: 0 0;
@@ -106,7 +106,9 @@
 
 .delete-cabinet,
 .add-cabinet{
+  aspect-ratio: 1;
   height: 20px;
+  width: 20px;
   padding: 0 0;
   background-color: #1ab6ac;
   color: #ffffff;
@@ -128,20 +130,8 @@
   text-align: right;
 }
 
-.add-cabinet {
-  aspect-ratio: 1;
-  width: 30px;
-  background-color: rgb(175, 30, 30);
-}
-.delete-cabinet {
-  aspect-ratio: 1;
-  width: 45px;
-  background-color: rgb(175, 30, 30);
-}
-
-.delete-cabinet:hover {
-  background-color: rgb(127, 22, 22);
-}
+.delete-cabinet:hover,
+.add-cabinet:hover,
 .show-cabinet:hover {
   background-color: #189b93;
 }
