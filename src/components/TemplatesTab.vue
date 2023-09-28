@@ -1,15 +1,20 @@
 <template>
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
-      <div class="button-set">
-        <button @click="addTemplate(index)" class="add-cabinet">
-          <font-awesome-icon icon="fa-solid fa-plus" stroke="" />
-        </button>
-        <button @click="toggleTable(index)" class="show-cabinet"><b style="margin-left: 5px;">{{ getButtonText(index) }}</b></button>
-        <button @click="removeRow(index)" class="delete-cabinet">
-          <font-awesome-icon icon="fa-solid fa-gear" stroke="" />
-        </button>
-      </div>
+      <CButtonGroup class="button-set" size="sm" role="group" aria-label="Button group with nested dropdown">
+        <CButton @click="toggleTable(index)" class="toggle-table" :color="buttonColor">{{ getButtonText(index) }}</CButton>
+        <CDropdown  variant="btn-group">
+          <CDropdownToggle class="dropdown" :color="buttonColor"></CDropdownToggle>
+          <CDropdownMenu>
+            <CDropdownItem href="#">Action</CDropdownItem>
+            <CDropdownItem href="#">Another action</CDropdownItem>
+            <CDropdownItem href="#">Something else here</CDropdownItem>
+            <CDropdownDivider/>
+            <CDropdownItem href="#">Separated link</CDropdownItem>
+          </CDropdownMenu>
+        </CDropdown>
+      </CButtonGroup>
+
       <table v-if="visibleTables[index]">
         <tr>
           <th>Q</th>
@@ -31,18 +36,26 @@
 </template>
 
 <script>
+  import {  CDropdown, CDropdownToggle, CDropdownItem, CDropdownMenu, 
+            CDropdownDivider, CButton,CButtonGroup } from '@coreui/vue';
+
   export default {
     props: {
       templates: {
         type: Array,
-        default: () => []
+        default: () => [],
       },
     },
     name: "TemplatesTab",
     data() {
       return {
-        visibleTables: new Array(this.templates.length).fill(true)
+        visibleTables: new Array(this.templates.length).fill(true),
+        buttonColor: "info"
       }
+    },
+    components: {
+      CDropdown, CDropdownToggle, CDropdownItem, CDropdownMenu,
+      CDropdownDivider, CButton,CButtonGroup,
     },
     methods: {
       toggleTable(index) {
@@ -79,38 +92,63 @@
 .grid-container {
   max-width: 1200px;
   min-width: 750px;
-  margin: 20px auto;
+  margin: 10px;
   /* width: 100%; */
 }
 
 .button-set {
-  display: flex; /* Aligns buttons horizontally */
-  justify-content: space-between; /* Space buttons evenly */
-  margin-bottom: 0px;
+  display: flex;
+  /* justify-content: space-evenly; */
+  margin-bottom: 2px;
+  margin-top: 2px;
 }
 
-.show-cabinet {
+.toggle-table {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  /* border: 1px solid rgb(98, 57, 223); */
+  border-radius: 0px;
+}
+
+.dropdown {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  color: white;
+  margin-left: 3px;
+  /* border: 1px solid black; */
+  border-radius: 0px;
+/* stuff in here */
+}
+
+
+
+/* .show-cabinet {
+  flex-grow: 1;
   height: 20px;
   padding: 0 0;
-  background-color: #1ab6ac;
+  padding-left: 8px;
+  background-color: #4a68cb;;
   color: #ffffff;
   border: 1px solid black;
   border-radius: 3px;
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
   display: flex;
   justify-content: left;
   align-items: center;
-}
+} */
 
-.delete-cabinet,
+/* .delete-cabinet,
 .add-cabinet{
-  aspect-ratio: 1;
-  height: 20px;
-  width: 20px;
+  height: 20px !important;
+  width: 40px;
   padding: 0 0;
-  background-color: #1ab6ac;
+  background-color: #4a68cb;
   color: #ffffff;
   border: 1px solid black;
   border-radius: 3px;
@@ -120,22 +158,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
-.show-cabinet {
-  flex-grow: 1;
-  min-width: 0;
-  margin-right: 3px;
-  margin-left: 3px;
-  text-align: right;
-}
-
-.delete-cabinet:hover,
+/* .delete-cabinet:hover,
 .add-cabinet:hover,
 .show-cabinet:hover {
-  background-color: #189b93;
-}
+  background-color: #a4b6f2;;
+} */
 
+
+
+/* Table CSS */
 table {
   border-collapse: collapse;
   table-layout: fixed;
@@ -152,14 +185,17 @@ td, th {
 }
 
 th:nth-child(1),
-td:nth-child(1),
+td:nth-child(1) {
+  width: 40px;
+  text-align: right;
+}
 th:nth-child(3),
 td:nth-child(3),
 th:nth-child(4),
 td:nth-child(4),
 th:nth-child(5),
 td:nth-child(5) {
-  width: 54px;
+  width: 70px;
 }
 
 td:nth-child(3),

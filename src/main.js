@@ -13,6 +13,9 @@ import { faUserSecret, faGear, faPlus } from '@fortawesome/free-solid-svg-icons'
 /* add icons to the library */
 library.add(faUserSecret, faGear, faPlus)
 
+/* import CSS Library for buttons */
+import '@coreui/coreui/dist/css/coreui.min.css'
+
 createApp(App)
 .component('font-awesome-icon', FontAwesomeIcon)
 .mount('#app')
