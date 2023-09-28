@@ -1,22 +1,33 @@
 <template>
-  <button @click="activeTab = 'ProjectTab'">Project</button>
-  <button @click="activeTab = 'TemplatesTab'">Templates</button>
-  <button @click="activeTab = 'OptimizerTab'">Optimizer</button>
-
-  <ProjectTab v-if="activeTab === 'ProjectTab'" 
-    :templates="projectTabTemplates"
-    @remove-template-p="removeTemplateFromProjectTab"/>
-
-  <TemplatesTab v-if="activeTab === 'TemplatesTab'" 
-    :templates="templateTabTemplates"
-    @add-template="addTemplateToProjectTab"
-    @remove-template-t="removeTemplateFromTemplatesTab"/>
-
-  <OptimizerTab v-if="activeTab === 'OptimizerTab'" />
-
+  <div class="main-pane">
+    <CNav variant="tabs" layout="fill">
+      <CNavItem >
+        <CNavLink @click="activeTab = 'ProjectTab'" :active="activeTab === 'ProjectTab'">Project</CNavLink>
+      </CNavItem>
+      <CNavItem>
+        <CNavLink @click="activeTab = 'TemplatesTab'" :active="activeTab === 'TemplatesTab'">Templates</CNavLink>
+      </CNavItem>
+      <CNavItem>
+        <CNavLink @click="activeTab = 'OptimizerTab'" :active="activeTab === 'OptimizerTab'">Optimizer</CNavLink>
+      </CNavItem>
+    </CNav>
+  
+    <ProjectTab v-if="activeTab === 'ProjectTab'" 
+      :templates="projectTabTemplates"
+      @remove-template-p="removeTemplateFromProjectTab"/>
+  
+    <TemplatesTab v-if="activeTab === 'TemplatesTab'" 
+      :templates="templateTabTemplates"
+      @add-template="addTemplateToProjectTab"
+      @remove-template-t="removeTemplateFromTemplatesTab"/>
+  
+    <OptimizerTab v-if="activeTab === 'OptimizerTab'" />
+  </div>
 </template>
 
 <script>
+  import {CNav, CNavItem, CNavLink } from '@coreui/vue'
+
   import ProjectTab   from './ProjectTab.vue'
   import TemplatesTab from './TemplatesTab.vue'
   import OptimizerTab from './OptimizerTab.vue'
@@ -30,14 +41,21 @@
         activeTab: 'TemplatesTab', //Component name
         projectTabTemplates: [],
         templateTabTemplates: standardTemplates,
+        active: [false, true, false]
       }
     },
     components: {
       ProjectTab,
       TemplatesTab,
-      OptimizerTab
+      OptimizerTab,
+      CNav, CNavItem, CNavLink,
     },
     methods: {
+      setActiveTab(tab, index) {
+        this.active = [false, false, false];
+        this.active[index] = true;
+        this.activeTab = tab;
+      },
       addTemplateToProjectTab(template) {
         console.log('TabObject: Adding ', template.Name);
         this.projectTabTemplates.push(template);
@@ -54,5 +72,13 @@
 </script>
 
 <style scoped>
+.main-pane {
+  max-width: 1200px;
+  min-width: 800px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  margin: 10px;
+  padding: 10px 10px;
+}
 
 </style>

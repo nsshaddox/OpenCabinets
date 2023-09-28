@@ -14,7 +14,6 @@
           </CDropdownMenu>
         </CDropdown>
       </CButtonGroup>
-
       <table v-if="visibleTables[index]">
         <tr>
           <th>Q</th>
@@ -92,7 +91,7 @@
 .grid-container {
   max-width: 1200px;
   min-width: 750px;
-  margin: 10px;
+  /* margin: 10px; */
   /* width: 100%; */
 }
 
@@ -184,6 +183,15 @@ td, th {
   line-height: 5px;
 }
 
+/* th {
+  border: 2px solid black;
+  padding: 8px;
+  word-wrap: break-word;
+  overflow: hidden; 
+  max-width: 100%; 
+  line-height: 5px;
+} */
+
 th:nth-child(1),
 td:nth-child(1) {
   width: 40px;
@@ -209,4 +217,5 @@ td:nth-child(6),
 td:nth-child(7) {
   text-align: left;
 }
+
 </style>
