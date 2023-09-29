@@ -29,7 +29,7 @@
           <template v-if="row[0] !== 0">
             <td v-for="(cell, index) in row" :key="index">
               <!-- Format the cells to display 2 decimal places even if they are whole numbers -->
-              {{ index > 0 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
+              {{ index > 1 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
             </td>
           </template>
         </tr>
@@ -165,14 +165,10 @@ td, th {
   line-height: 5px;
 }
 
-/* th {
-  border: 2px solid black;
-  padding: 8px;
-  word-wrap: break-word;
-  overflow: hidden; 
-  max-width: 100%; 
-  line-height: 5px;
-} */
+th {
+  background-color: rgb(173, 205, 251);
+  /* border: 2px solid black; */
+}
 
 th:nth-child(1),
 td:nth-child(1) {
