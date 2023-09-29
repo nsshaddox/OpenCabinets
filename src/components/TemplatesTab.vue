@@ -1,6 +1,7 @@
 <template>
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
+      {{ sortTemplateParts(template) }}
       <CButtonGroup class="button-set" size="sm" role="group" aria-label="Button group with nested dropdown">
         <CButton @click="toggleTable(index)" class="toggle-table" :color="buttonColor">{{ getButtonText(index) }}</CButton>
         <CDropdown  variant="btn-group">
@@ -24,9 +25,12 @@
           <th>Material</th>
           <th>Notes</th>
         </tr>
-        <tr v-for="row in template.Components" :key="row">
+        <tr v-for="row in tempTemplate.Components" :key="row">
           <template v-if="row[0] !== 0">
-            <td v-for="cell in row" :key="cell">{{ cell }}</td>
+            <td v-for="(cell, index) in row" :key="index">
+              <!-- Format the cells to display 2 decimal places even if they are whole numbers -->
+              {{ index > 0 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
+            </td>
           </template>
         </tr>
       </table>
@@ -49,7 +53,8 @@
     data() {
       return {
         visibleTables: new Array(this.templates.length).fill(true),
-        buttonColor: "info"
+        buttonColor: "info",
+        tempTemplate: [],
       }
     },
     components: {
@@ -82,7 +87,29 @@
         result += `Outer: ${data.OuterMaterial}`;
 
         return result;
+      },
+      sortTemplateParts(template, innerMaterial) {
+        console.log("sort the templates", template);
+        this.tempTemplate = template;
+        // only need to check length, width, and material
+        this.tempTemplate.Components.sort((a, b) => {
+          // Compare materials first
+          if (a[5] !== b[5]) {
+            if (a[5] === innerMaterial) return -1;
+            if (b[5] === innerMaterial) return 1;
+            return a[5].localeCompare(b[5]);
+          }
+          
+          // If materials are equal, compare lengths
+          if (a[3] !== b[3]) {
+            return b[3] - a[3];
+          }
+          
+          // If lengths are equal, compare widths
+          return b[2] - a[2];
+        });
       }
+
     },
   }
 </script>
@@ -120,52 +147,7 @@
   margin-left: 3px;
   /* border: 1px solid black; */
   border-radius: 0px;
-/* stuff in here */
 }
-
-
-
-/* .show-cabinet {
-  flex-grow: 1;
-  height: 20px;
-  padding: 0 0;
-  padding-left: 8px;
-  background-color: #4a68cb;;
-  color: #ffffff;
-  border: 1px solid black;
-  border-radius: 3px;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.3s ease-in-out;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-} */
-
-/* .delete-cabinet,
-.add-cabinet{
-  height: 20px !important;
-  width: 40px;
-  padding: 0 0;
-  background-color: #4a68cb;
-  color: #ffffff;
-  border: 1px solid black;
-  border-radius: 3px;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.2s ease-in-out;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
-
-/* .delete-cabinet:hover,
-.add-cabinet:hover,
-.show-cabinet:hover {
-  background-color: #a4b6f2;;
-} */
-
-
 
 /* Table CSS */
 table {
