@@ -7,11 +7,10 @@
         <CDropdown  variant="btn-group">
           <CDropdownToggle class="dropdown" :color="buttonColor"></CDropdownToggle>
           <CDropdownMenu>
-            <CDropdownItem href="#">Action</CDropdownItem>
-            <CDropdownItem href="#">Another action</CDropdownItem>
-            <CDropdownItem href="#">Something else here</CDropdownItem>
+            <CDropdownItem @click="addTemplate(index)">Add</CDropdownItem>
+            <CDropdownItem href="#">Edit</CDropdownItem>
             <CDropdownDivider/>
-            <CDropdownItem href="#">Separated link</CDropdownItem>
+            <CDropdownItem @click="removeTemplate(index)">Remove</CDropdownItem>
           </CDropdownMenu>
         </CDropdown>
       </CButtonGroup>
@@ -66,7 +65,7 @@
         this.visibleTables[index] = !this.visibleTables[index];
         console.log(this.visibleTables[index]);
       },
-      removeRow(index) {
+      removeTemplate(index) {
         this.$emit('remove-template-t', index);
       },
       addTemplate(index) {

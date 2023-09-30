@@ -12,11 +12,13 @@
       </CNavItem>
     </CNav>
   
-    <ProjectTab v-if="activeTab === 'ProjectTab'" 
+    <ProjectTab 
+      v-if="activeTab === 'ProjectTab'" 
       :templates="projectTabTemplates"
       @remove-template-p="removeTemplateFromProjectTab"/>
   
-    <TemplatesTab v-if="activeTab === 'TemplatesTab'" 
+    <TemplatesTab 
+      v-if="activeTab === 'TemplatesTab'" 
       :templates="templateTabTemplates"
       @add-template="addTemplateToProjectTab"
       @remove-template-t="removeTemplateFromTemplatesTab"/>
@@ -41,7 +43,6 @@
         activeTab: 'TemplatesTab', //Component name
         projectTabTemplates: [],
         templateTabTemplates: standardTemplates,
-        active: [false, true, false]
       }
     },
     components: {
@@ -51,11 +52,6 @@
       CNav, CNavItem, CNavLink,
     },
     methods: {
-      setActiveTab(tab, index) {
-        this.active = [false, false, false];
-        this.active[index] = true;
-        this.activeTab = tab;
-      },
       addTemplateToProjectTab(template) {
         console.log('TabObject: Adding ', template.Name);
         this.projectTabTemplates.push(template);
