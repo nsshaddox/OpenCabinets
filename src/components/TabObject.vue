@@ -1,54 +1,62 @@
 <template>
   <div class="main-pane">
     <CNav variant="tabs" layout="fill">
-      <CNavItem >
-        <CNavLink @click="activeTab = 'ProjectTab'" :active="activeTab === 'ProjectTab'">Project</CNavLink>
+      <CNavItem>
+        <CNavLink class="tab-bg" @click="activeTab = 'ProjectTab'" 
+          :active="activeTab === 'ProjectTab'">
+          Project
+        </CNavLink>
       </CNavItem>
       <CNavItem>
-        <CNavLink @click="activeTab = 'TemplatesTab'" :active="activeTab === 'TemplatesTab'">Templates</CNavLink>
+        <CNavLink class="tab-bg" @click="activeTab = 'TemplatesTab'" 
+          :active="activeTab === 'TemplatesTab'">
+          Templates
+        </CNavLink>
       </CNavItem>
       <CNavItem>
-        <CNavLink @click="activeTab = 'OptimizerTab'" :active="activeTab === 'OptimizerTab'">Optimizer</CNavLink>
+        <CNavLink class="tab-bg" @click="activeTab = 'OptimizerTab'" 
+          :active="activeTab === 'OptimizerTab'">
+          Optimizer
+        </CNavLink>
       </CNavItem>
     </CNav>
-  
-    <ProjectTab 
+
+    <TemplatesView 
       v-if="activeTab === 'ProjectTab'" 
       :templates="projectTabTemplates"
+      :isProjectTab="true"
       @remove-template-p="removeTemplateFromProjectTab"/>
   
-    <TemplatesTab 
+    <TemplatesView 
       v-if="activeTab === 'TemplatesTab'" 
       :templates="templateTabTemplates"
+      :isProjectTab="false"
       @add-template="addTemplateToProjectTab"
       @remove-template-t="removeTemplateFromTemplatesTab"/>
   
-    <OptimizerTab v-if="activeTab === 'OptimizerTab'" />
+    <OptimizerView v-if="activeTab === 'OptimizerTab'" />
   </div>
 </template>
 
 <script>
   import {CNav, CNavItem, CNavLink } from '@coreui/vue'
 
-  import ProjectTab   from './ProjectTab.vue'
-  import TemplatesTab from './TemplatesTab.vue'
-  import OptimizerTab from './OptimizerTab.vue'
-
+  import TemplatesView       from './TemplateView.vue'
+  import OptimizerView       from './OptimizerView.vue'
   import standardTemplates  from './templates/standardTemplates.json';
 
   export default {
     name: 'TabObject',
     data() {
       return {
-        activeTab: 'TemplatesTab', //Component name
+        activeTab: 'TemplatesTab',
         projectTabTemplates: [],
         templateTabTemplates: standardTemplates,
       }
     },
     components: {
-      ProjectTab,
-      TemplatesTab,
-      OptimizerTab,
+      TemplatesView,
+      OptimizerView,
       CNav, CNavItem, CNavLink,
     },
     methods: {
@@ -75,6 +83,16 @@
   border-radius: 6px;
   margin: 10px;
   padding: 10px 10px;
+}
+
+.tab-bg {
+  color: rgb(109, 109, 109);
+  /* background-color: rgb(176, 176, 176); */
+}
+
+.tab-bg:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(216, 216, 216);
 }
 
 </style>

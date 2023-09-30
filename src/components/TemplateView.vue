@@ -7,7 +7,7 @@
         <CDropdown  variant="btn-group">
           <CDropdownToggle class="dropdown" :color="buttonColor"></CDropdownToggle>
           <CDropdownMenu>
-            <CDropdownItem @click="addTemplate(index)">Add</CDropdownItem>
+            <CDropdownItem v-if="!isProjectTab" @click="addTemplate(index)">Add</CDropdownItem>
             <CDropdownItem href="#">Edit</CDropdownItem>
             <CDropdownDivider/>
             <CDropdownItem @click="removeTemplate(index)">Remove</CDropdownItem>
@@ -43,12 +43,16 @@
 
   export default {
     props: {
+      isProjectTab: {
+        type: Boolean,
+        default: false,
+      },
       templates: {
         type: Array,
         default: () => [],
       },
     },
-    name: "TemplatesTab",
+    name: "TemplatesView",
     data() {
       return {
         visibleTables: new Array(this.templates.length).fill(true),
@@ -66,7 +70,11 @@
         console.log(this.visibleTables[index]);
       },
       removeTemplate(index) {
-        this.$emit('remove-template-t', index);
+        if (this.isProjectTab){
+          this.$emit('remove-template-p', index);
+        } else {
+          this.$emit('remove-template-t', index);
+        }
       },
       addTemplate(index) {
         this.$emit('add-template', this.templates[index]);
@@ -136,6 +144,11 @@
   color: white;
   /* border: 1px solid rgb(98, 57, 223); */
   border-radius: 0px;
+}
+
+.toggle-table:hover {
+  color: white;
+  /* border: 1px solid blue; */
 }
 
 .dropdown {

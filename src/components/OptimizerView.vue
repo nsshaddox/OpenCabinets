@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: "OptimizerTab"
+    name: "OptimizerView"
   }
 </script>
 
