@@ -1,15 +1,14 @@
 <template>
-  <EditTemplateModal :template="tempTemplate" :visibleStaticBackdropDemo="isModalVisible" @close-modal="closeModal()"></EditTemplateModal>
+  <EditTemplateModal :modalData="modalData" @save-changes="saveChanges" @close-modal="closeModal()"></EditTemplateModal>
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
-      {{ sortTemplateParts(template) }}
       <CButtonGroup class="button-set" size="sm" role="group" aria-label="Button group with nested dropdown">
         <CButton @click="toggleTable(index)" class="toggle-table" :color="buttonColor">{{ getButtonText(index) }}</CButton>
         <CDropdown  variant="btn-group">
           <CDropdownToggle class="dropdown" :color="buttonColor"></CDropdownToggle>
           <CDropdownMenu>
             <CDropdownItem v-if="!isProjectTab" @click="addTemplate(index)">Add</CDropdownItem>
-            <CDropdownItem @click="this.isModalVisible = true">Edit</CDropdownItem>
+            <CDropdownItem @click="editClicked(template, index)">Edit</CDropdownItem>
             <CDropdownDivider/>
             <CDropdownItem @click="removeTemplate(index)">Remove</CDropdownItem>
           </CDropdownMenu>
@@ -25,11 +24,11 @@
           <th>Material</th>
           <th>Notes</th>
         </tr>
-        <tr v-for="row in tempTemplate.Components" :key="row">
+        <tr v-for="row in template.Components" :key="row">
           <template v-if="row[0] !== 0">
-            <td v-for="(cell, index) in row" :key="index">
+            <td v-for="(cell, i) in row" :key="i">
               <!-- Format the cells to display 2 decimal places even if they are whole numbers -->
-              {{ index > 1 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
+              {{ i > 1 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
             </td>
           </template>
         </tr>
@@ -66,10 +65,20 @@
       return {
         visibleTables: new Array(this.templates.length).fill(true),
         buttonColor: "info",
-        tempTemplate: [],
-        isModalVisible: false
+        timesSorted: 0,
+        modalData: {
+          template: {},
+          visibleStaticBackdropDemo: false,
+          index: 0,
+        }
       }
     },
+    emits: [
+      'remove-template-p',
+      'remove-template-t',
+      'add-template',
+      'save-changes',
+    ],
     components: {
       CDropdown, 
       CDropdownToggle, 
@@ -111,29 +120,16 @@
 
         return result;
       },
-      sortTemplateParts(template, innerMaterial) {
-        console.log("sort the templates", template);
-        this.tempTemplate = template;
-        // only need to check length, width, and material
-        this.tempTemplate.Components.sort((a, b) => {
-          // Compare materials first
-          if (a[5] !== b[5]) {
-            if (a[5] === innerMaterial) return -1;
-            if (b[5] === innerMaterial) return 1;
-            return a[5].localeCompare(b[5]);
-          }
-          
-          // If materials are equal, compare lengths
-          if (a[3] !== b[3]) {
-            return b[3] - a[3];
-          }
-          
-          // If lengths are equal, compare widths
-          return b[2] - a[2];
-        });
-      },
       closeModal() {
-        this.isModalVisible = false;
+        this.modalData.visibleStaticBackdropDemo = false;
+      },
+      editClicked(template, index) {
+        this.modalData.visibleStaticBackdropDemo = true;
+        this.modalData.template = template;
+        this.modalData.index = index;
+      },
+      saveChanges(template, index) {
+        this.$emit('save-changes', template, index);
       }
     },
   }

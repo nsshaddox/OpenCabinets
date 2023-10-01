@@ -1,4 +1,6 @@
 <template>
+  {{ sortTemplateParts(this.projectTabTemplates) }}
+  {{ sortTemplateParts(this.templateTabTemplates) }}
   <div class="main-pane">
     <CNav variant="tabs" layout="fill">
       <CNavItem>
@@ -21,18 +23,24 @@
       </CNavItem>
     </CNav>
 
-    <TemplatesView 
-      v-if="activeTab === 'ProjectTab'" 
-      :templates="projectTabTemplates"
-      :isProjectTab="true"
-      @remove-template-p="removeTemplateFromProjectTab"/>
+    <!-- <KeepAlive> -->
+      <TemplatesView 
+        v-if="activeTab === 'ProjectTab'" 
+        :templates="projectTabTemplates"
+        :isProjectTab="true"
+        @remove-template-p="removeTemplateFromProjectTab"
+        @save-changes="saveChangesFromProjectTab"/>
+    <!-- </KeepAlive> -->
   
-    <TemplatesView 
-      v-if="activeTab === 'TemplatesTab'" 
-      :templates="templateTabTemplates"
-      :isProjectTab="false"
-      @add-template="addTemplateToProjectTab"
-      @remove-template-t="removeTemplateFromTemplatesTab"/>
+    <!-- <KeepAlive> -->
+      <TemplatesView 
+        v-if="activeTab === 'TemplatesTab'" 
+        :templates="templateTabTemplates"
+        :isProjectTab="false"
+        @add-template="addTemplateToProjectTab"
+        @remove-template-t="removeTemplateFromTemplatesTab"
+        @save-changes="saveChangesFromTemplatesTab"/>
+    <!-- </KeepAlive> -->
   
     <OptimizerView v-if="activeTab === 'OptimizerTab'" />
   </div>
@@ -65,12 +73,41 @@
         this.projectTabTemplates.push(template);
       },
       removeTemplateFromTemplatesTab(index) {
+        console.log('TabObject: Removing', this.templateTabTemplates[index], 'from Templates');
         this.templateTabTemplates.splice(index, 1);
-        console.log(index);
       },
       removeTemplateFromProjectTab(index) {
+        console.log('TabObject: Removing', this.templateTabTemplates[index], 'from Project');
         this.projectTabTemplates.splice(index, 1);
-      }
+      },
+      saveChangesFromProjectTab(template, index) {
+        this.projectTabTemplates[index] = JSON.parse(JSON.stringify(template));
+      },
+      saveChangesFromTemplatesTab(template, index) {
+        this.templateTabTemplates[index] = JSON.parse(JSON.stringify(template));
+      },
+      sortTemplateParts(templates) {
+        for (let template of templates){
+          const innerMaterial = template.MetaData.innerMaterial
+          this.tempTemplate = template;
+          this.tempTemplate.Components.sort((a, b) => {
+            // Compare materials first
+            if (a[5] !== b[5]) {
+              if (a[5] === innerMaterial) return -1;
+              if (b[5] === innerMaterial) return 1;
+              return a[5].localeCompare(b[5]);
+            }
+            
+            // If materials are equal, compare lengths
+            if (a[3] !== b[3]) {
+              return b[3] - a[3];
+            }
+            
+            // If lengths are equal, compare widths
+            return b[2] - a[2];
+          });
+        }
+      },
     },
   }
 </script>

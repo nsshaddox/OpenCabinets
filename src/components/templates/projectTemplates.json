@@ -18,7 +18,7 @@
       [2, "Side Panel", 24, 30.0, 0.75, "Melamine", ""],
       [1, "Back Panel", 15.5, 29.5, 0.25, "Melamine", ""],
       [2, "Shelves", 23, 14.5, 0.75, "Melamine", "Adjustable height"],
-      [2, "Door Panels", 7.875, 29.75, 0.75, "Oak", "Euro Style"]
+      [2, "Door Panel", 7.875, 29.75, 0.75, "Oak", "Euro Style"]
     ]
   }
 ]
