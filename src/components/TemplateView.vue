@@ -1,4 +1,5 @@
 <template>
+  <EditTemplateModal :template="tempTemplate" :visibleStaticBackdropDemo="isModalVisible" @close-modal="closeModal()"></EditTemplateModal>
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
       {{ sortTemplateParts(template) }}
@@ -8,7 +9,7 @@
           <CDropdownToggle class="dropdown" :color="buttonColor"></CDropdownToggle>
           <CDropdownMenu>
             <CDropdownItem v-if="!isProjectTab" @click="addTemplate(index)">Add</CDropdownItem>
-            <CDropdownItem href="#">Edit</CDropdownItem>
+            <CDropdownItem @click="this.isModalVisible = true">Edit</CDropdownItem>
             <CDropdownDivider/>
             <CDropdownItem @click="removeTemplate(index)">Remove</CDropdownItem>
           </CDropdownMenu>
@@ -38,8 +39,16 @@
 </template>
 
 <script>
-  import {  CDropdown, CDropdownToggle, CDropdownItem, CDropdownMenu, 
-            CDropdownDivider, CButton,CButtonGroup } from '@coreui/vue';
+  import { 
+    CDropdown, 
+    CDropdownToggle, 
+    CDropdownItem, 
+    CDropdownMenu, 
+    CDropdownDivider, 
+    CButton,CButtonGroup 
+  } from '@coreui/vue';
+
+  import EditTemplateModal from './EditTemplateModal.vue'
 
   export default {
     props: {
@@ -58,11 +67,18 @@
         visibleTables: new Array(this.templates.length).fill(true),
         buttonColor: "info",
         tempTemplate: [],
+        isModalVisible: false
       }
     },
     components: {
-      CDropdown, CDropdownToggle, CDropdownItem, CDropdownMenu,
-      CDropdownDivider, CButton,CButtonGroup,
+      CDropdown, 
+      CDropdownToggle, 
+      CDropdownItem, 
+      CDropdownMenu,
+      CDropdownDivider, 
+      CButton,
+      CButtonGroup,
+      EditTemplateModal,
     },
     methods: {
       toggleTable(index) {
@@ -115,8 +131,10 @@
           // If lengths are equal, compare widths
           return b[2] - a[2];
         });
+      },
+      closeModal() {
+        this.isModalVisible = false;
       }
-
     },
   }
 </script>
