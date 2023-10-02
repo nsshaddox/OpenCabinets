@@ -1,4 +1,5 @@
 <template>
+  <button onclick="window.print()">This button actually prints!</button>
   {{ sortTemplateParts(this.projectTabTemplates) }}
   {{ sortTemplateParts(this.templateTabTemplates) }}
   <div class="main-pane">
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-  import {CNav, CNavItem, CNavLink } from '@coreui/vue'
+  import { CNav, CNavItem, CNavLink } from '@coreui/vue'
 
   import TemplatesView       from './TemplateView.vue'
   import OptimizerView       from './OptimizerView.vue'
@@ -63,10 +64,10 @@
       }
     },
     components: {
-      TemplatesView,
-      OptimizerView,
-      CNav, CNavItem, CNavLink,
-    },
+    TemplatesView,
+    OptimizerView,
+    CNav, CNavItem, CNavLink,
+},
     methods: {
       addTemplateToProjectTab(template) {
         console.log('TabObject: Adding ', template.Name);
