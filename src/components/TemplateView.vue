@@ -27,8 +27,7 @@
         <tr v-for="row in template.Components" :key="row">
           <template v-if="row[0] !== 0">
             <td v-for="(cell, i) in row" :key="i">
-              <!-- Format the cells to display 2 decimal places even if they are whole numbers -->
-              {{ i > 1 && typeof cell === 'number' ? (cell % 1 === 0 ? cell + '.00' : cell.toFixed(2)) : cell }}
+              {{ formatCell(cell, i) }}
             </td>
           </template>
         </tr>
@@ -90,6 +89,10 @@
       EditTemplateModal,
     },
     methods: {
+      formatCell(cell, col) {
+        if (col < 2 || col > 4) return cell;
+        return cell.toFixed(2).toString();
+      },
       toggleTable(index) {
         this.visibleTables[index] = !this.visibleTables[index];
         console.log(this.visibleTables[index]);

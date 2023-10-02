@@ -141,14 +141,14 @@
       },
       saveChanges() {
         if (this.isAutoChecked) {
-          const QUANTITY = this.modifiedTemplate.MetaData.Quantity;
-          const WIDTH = this.modifiedTemplate.MetaData.Width;
-          const DEPTH = this.modifiedTemplate.MetaData.Depth;
-          const HEIGHT = this.modifiedTemplate.MetaData.Height;
-          const INNER_MATERIAL = this.modifiedTemplate.MetaData.InnerMaterial;
-          const OUTER_MATERIAL = this.modifiedTemplate.MetaData.OuterMaterial;
-          const THICK_BOX = 0.75;   //add this to the metadata
-          const THICK_BACK = 0.25;  //add this to the metadata
+          const QUANTITY = parseInt(this.modifiedTemplate.MetaData.Quantity);
+          const WIDTH = parseFloat(this.modifiedTemplate.MetaData.Width);
+          const DEPTH = parseFloat(this.modifiedTemplate.MetaData.Depth);
+          const HEIGHT = parseFloat(this.modifiedTemplate.MetaData.Height);
+          const INNER_MATERIAL = this.modifiedTemplate.MetaData.InnerMaterial; // No need to convert
+          const OUTER_MATERIAL = this.modifiedTemplate.MetaData.OuterMaterial; // No need to convert
+          const THICK_BOX       = 0.75;   //add this to the metadata
+          const THICK_BACK      = 0.25;  //add this to the metadata
           
           for ( let component of this.modifiedTemplate.Components) {
             switch (component[1]) {

@@ -1,4 +1,11 @@
 <template>
+  <!-- 
+    TODO:
+      * Create new page/modal (print preview)
+      * Format page/modal to for printable version of page
+      * Should be a vue component in Templates View
+      * 
+   -->
   <button onclick="window.print()">This button actually prints!</button>
   {{ sortTemplateParts(this.projectTabTemplates) }}
   {{ sortTemplateParts(this.templateTabTemplates) }}
@@ -89,7 +96,7 @@
       },
       sortTemplateParts(templates) {
         for (let template of templates){
-          const innerMaterial = template.MetaData.innerMaterial
+          const innerMaterial = template.MetaData.InnerMaterial;
           this.tempTemplate = template;
           this.tempTemplate.Components.sort((a, b) => {
             // Compare materials first
@@ -99,12 +106,17 @@
               return a[5].localeCompare(b[5]);
             }
             
-            // If materials are equal, compare lengths
+            // If materials are equal, compare thickness (greater first)
+            if (a[4] !== b[4]) {
+              return b[4] - a[4];
+            }
+            
+            // If thicknesses are equal, compare lengths (greater first)
             if (a[3] !== b[3]) {
               return b[3] - a[3];
             }
             
-            // If lengths are equal, compare widths
+            // If lengths are equal, compare widths (greater first)
             return b[2] - a[2];
           });
         }
