@@ -6,7 +6,7 @@
       * Should be a vue component in Templates View
       * 
    -->
-  <button onclick="window.print()">This button actually prints!</button>
+  <!-- <button onclick="window.print()">This button actually prints!</button> -->
   {{ sortTemplateParts(this.projectTabTemplates) }}
   {{ sortTemplateParts(this.templateTabTemplates) }}
   <div class="main-pane">
