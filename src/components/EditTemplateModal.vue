@@ -1,6 +1,5 @@
 <template>
-  <!-- <CButton color="primary" @click="() => { visibleStaticBackdropDemo = true }">Launch demo modal</CButton> -->
-  <CModal size="lg" backdrop="static" :visible="modalData.visibleStaticBackdropDemo" @close="closeModal">
+  <CModal size="lg" backdrop="static" :visible="editData.visibleStaticBackdropDemo" @close="closeModal">
     <CModalHeader>
       <CModalTitle>Modify Cabinet</CModalTitle>
     </CModalHeader>
@@ -108,7 +107,7 @@
   export default {
     name: "EditTemplateModal",
     props: {
-      modalData: {
+      editData: {
         type: Object,
         default: () => ({})
       },
@@ -199,12 +198,12 @@
             }
           }
         }
-        this.$emit('save-changes', this.modifiedTemplate, this.modalData.index);
+        this.$emit('save-changes', this.modifiedTemplate, this.editData.index);
         this.closeModal();
       },
       copyTemplate() {
-        console.log(this.modalData.template.Components);
-        this.modifiedTemplate = JSON.parse(JSON.stringify(this.modalData.template));
+        console.log(this.editData.template.Components);
+        this.modifiedTemplate = JSON.parse(JSON.stringify(this.editData.template));
         console.log(this.modifiedTemplate.Components);
       }
     },

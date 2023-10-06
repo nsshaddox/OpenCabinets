@@ -1,5 +1,6 @@
 <template>
-  <EditTemplateModal :modalData="modalData" @save-changes="saveChanges" @close-modal="closeModal()"></EditTemplateModal>
+
+  <EditTemplateModal :editData="editData" @save-changes="saveChanges" @close-modal="closeModal()"></EditTemplateModal>
   <div class="grid-container">
     <div class="row-containers" v-for="(template, index) in templates" :key="template.Name">
       <CButtonGroup class="button-set" size="sm" role="group" aria-label="Button group with nested dropdown">
@@ -47,8 +48,10 @@
   } from '@coreui/vue';
 
   import EditTemplateModal from './EditTemplateModal.vue'
+  // import PrintModal from './PrintModal.vue'
 
   export default {
+    name: "TemplatesView",
     props: {
       isProjectTab: {
         type: Boolean,
@@ -59,17 +62,16 @@
         default: () => [],
       },
     },
-    name: "TemplatesView",
     data() {
       return {
         visibleTables: new Array(this.templates.length).fill(true),
         buttonColor: "info",
         timesSorted: 0,
-        modalData: {
+        editData: {
           template: {},
           visibleStaticBackdropDemo: false,
           index: 0,
-        }
+        },
       }
     },
     emits: [
@@ -87,16 +89,33 @@
       CButton,
       CButtonGroup,
       EditTemplateModal,
+      // PrintModal,
     },
     methods: {
+      /**
+       * Formats a cell based on the column index.
+       * @param {number} cell - The cell value.
+       * @param {number} col - The column index.
+       * @returns {string|number} The formatted cell value.
+       */
       formatCell(cell, col) {
         if (col < 2 || col > 4) return cell;
         return cell.toFixed(2).toString();
       },
+
+      /**
+       * Toggles the visibility of a table.
+       * @param {number} index - The index of the template.
+       */
       toggleTable(index) {
         this.visibleTables[index] = !this.visibleTables[index];
         console.log(this.visibleTables[index]);
       },
+
+      /**
+       * Removes a template.
+       * @param {number} index - The index of the template.
+       */
       removeTemplate(index) {
         if (this.isProjectTab){
           this.$emit('remove-template-p', index);
@@ -104,9 +123,20 @@
           this.$emit('remove-template-t', index);
         }
       },
+
+      /**
+       * Adds a template.
+       * @param {number} index - The index of the template.
+       */
       addTemplate(index) {
         this.$emit('add-template', this.templates[index]);
       },
+
+      /**
+       * Generates button text based on template metadata.
+       * @param {number} index - The index of the template.
+       * @returns {string} The generated button text.
+       */
       getButtonText(index) {
         const data = this.templates[index].MetaData;
         const spacer = ' || ';
@@ -123,14 +153,30 @@
 
         return result;
       },
+
+      /**
+       * Closes the edit modal
+       */
       closeModal() {
-        this.modalData.visibleStaticBackdropDemo = false;
+        this.editData.visibleStaticBackdropDemo = false;
       },
+
+      /**
+       * Handles the click event for editing a template.
+       * @param {object} template - The template to be edited.
+       * @param {number} index - The index of the template.
+       */
       editClicked(template, index) {
-        this.modalData.visibleStaticBackdropDemo = true;
-        this.modalData.template = template;
-        this.modalData.index = index;
+        this.editData.visibleStaticBackdropDemo = true;
+        this.editData.template = template;
+        this.editData.index = index;
       },
+
+      /**
+       * Saves changes to a template stored in TabObject.vue.
+       * @param {object} template - The modified template.
+       * @param {number} index - The index of the template.
+       */
       saveChanges(template, index) {
         this.$emit('save-changes', template, index);
       }

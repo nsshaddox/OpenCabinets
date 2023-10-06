@@ -1,65 +1,72 @@
 <template>
-  <!-- 
-    TODO:
-      * Create new page/modal (print preview)
-      * Format page/modal to for printable version of page
-      * Should be a vue component in Templates View
-      * 
-   -->
-  <!-- <button onclick="window.print()">This button actually prints!</button> -->
-  {{ sortTemplateParts(this.projectTabTemplates) }}
-  {{ sortTemplateParts(this.templateTabTemplates) }}
-  <div class="main-pane">
-    <CNav variant="tabs" layout="fill">
-      <CNavItem>
-        <CNavLink class="tab-bg" @click="activeTab = 'ProjectTab'" 
-          :active="activeTab === 'ProjectTab'">
-          Project
-        </CNavLink>
-      </CNavItem>
-      <CNavItem>
-        <CNavLink class="tab-bg" @click="activeTab = 'TemplatesTab'" 
-          :active="activeTab === 'TemplatesTab'">
-          Templates
-        </CNavLink>
-      </CNavItem>
-      <CNavItem>
-        <CNavLink class="tab-bg" @click="activeTab = 'OptimizerTab'" 
-          :active="activeTab === 'OptimizerTab'">
-          Optimizer
-        </CNavLink>
-      </CNavItem>
-    </CNav>
+  <template v-if="printData.isPrinting">
+    <PrintModal :printData="printData" @close-print="closePrint"></PrintModal>
+  </template>
 
-    <!-- <KeepAlive> -->
-      <TemplatesView 
-        v-if="activeTab === 'ProjectTab'" 
-        :templates="projectTabTemplates"
-        :isProjectTab="true"
-        @remove-template-p="removeTemplateFromProjectTab"
-        @save-changes="saveChangesFromProjectTab"/>
-    <!-- </KeepAlive> -->
-  
-    <!-- <KeepAlive> -->
-      <TemplatesView 
-        v-if="activeTab === 'TemplatesTab'" 
-        :templates="templateTabTemplates"
-        :isProjectTab="false"
-        @add-template="addTemplateToProjectTab"
-        @remove-template-t="removeTemplateFromTemplatesTab"
-        @save-changes="saveChangesFromTemplatesTab"/>
-    <!-- </KeepAlive> -->
-  
-    <OptimizerView v-if="activeTab === 'OptimizerTab'" />
-  </div>
+  <template v-else>
+    {{ sortTemplateParts(this.projectTabTemplates) }}
+    {{ sortTemplateParts(this.templateTabTemplates) }}
+    <div class="main-pane">
+      <CNav variant="tabs" layout="justified">
+        <CNavItem>
+          <CNavLink class="tab-bg" @click="activeTab = 'ProjectTab'" 
+            :active="activeTab === 'ProjectTab'">
+            Project
+          </CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink class="tab-bg" @click="activeTab = 'TemplatesTab'" 
+            :active="activeTab === 'TemplatesTab'">
+            Templates
+          </CNavLink>
+        </CNavItem>
+        <CNavItem style="padding-right: 10px;">
+          <CNavLink class="tab-bg" @click="activeTab = 'OptimizerTab'" 
+            :active="activeTab === 'OptimizerTab'">
+            Optimizer
+          </CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CButton 
+            style="padding-top: 0px; padding-bottom: 0px; text-align: start;" 
+            @click="printButton" color="primary">
+            Print
+          </CButton>
+        </CNavItem>
+      </CNav>
+
+      <!-- <KeepAlive> -->
+        <TemplatesView 
+          v-if="activeTab === 'ProjectTab'" 
+          :templates="projectTabTemplates"
+          :isProjectTab="true"
+          @remove-template-p="removeTemplateFromProjectTab"
+          @save-changes="saveChangesFromProjectTab"/>
+      <!-- </KeepAlive> -->
+    
+      <!-- <KeepAlive> -->
+        <TemplatesView 
+          v-if="activeTab === 'TemplatesTab'" 
+          :templates="templateTabTemplates"
+          :isProjectTab="false"
+          @add-template="addTemplateToProjectTab"
+          @remove-template-t="removeTemplateFromTemplatesTab"
+          @save-changes="saveChangesFromTemplatesTab"/>
+      <!-- </KeepAlive> -->
+    
+      <OptimizerView v-if="activeTab === 'OptimizerTab'" />
+    </div>
+  </template>
+
 </template>
 
 <script>
-  import { CNav, CNavItem, CNavLink } from '@coreui/vue'
+  import { CNav, CNavItem, CNavLink, CButton } from '@coreui/vue'
 
-  import TemplatesView       from './TemplateView.vue'
-  import OptimizerView       from './OptimizerView.vue'
-  import standardTemplates  from './templates/standardTemplates.json';
+  import TemplatesView        from './TemplateView.vue'
+  import OptimizerView        from './OptimizerView.vue'
+  import standardTemplates    from './templates/standardTemplates.json';
+  import PrintModal           from './PrintModal.vue';
 
   export default {
     name: 'TabObject',
@@ -68,14 +75,32 @@
         activeTab: 'TemplatesTab',
         projectTabTemplates: [],
         templateTabTemplates: standardTemplates,
+        printData: {
+          isPrinting: false,
+          printableTemplates: [],
+        }
       }
     },
     components: {
-    TemplatesView,
-    OptimizerView,
-    CNav, CNavItem, CNavLink,
-},
+      TemplatesView,
+      OptimizerView,
+      CNav, CNavItem, CNavLink,
+      CButton,
+      PrintModal,
+    },
     methods: {
+      closePrint() {
+        this.printData.isPrinting = false;
+      },
+      printButton() {
+        console.log("testing");
+        if (this.activeTab === 'TemplatesTab') {
+          this.printData.printableTemplates = this.templateTabTemplates;
+        } else {
+          this.printData.printableTemplates = this.projectTabTemplates;
+        }
+        this.printData.isPrinting = true;
+      },
       addTemplateToProjectTab(template) {
         console.log('TabObject: Adding ', template.Name);
         this.projectTabTemplates.push(template);
@@ -137,7 +162,7 @@
 
 .tab-bg {
   color: rgb(109, 109, 109);
-  /* background-color: rgb(176, 176, 176); */
+  background-color: rgb(235, 235, 235);
 }
 
 .tab-bg:hover {

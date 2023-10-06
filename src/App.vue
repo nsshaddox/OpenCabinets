@@ -6,13 +6,13 @@
   import Tabs from './components/TabObject.vue'
 
   export default {
-    name: 'TabObject',
+    name: 'App',
     data() {
       return {
       }
     },
     components: {
-      Tabs
+      Tabs,
     }
   }
 </script>
