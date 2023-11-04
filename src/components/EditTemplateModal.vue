@@ -182,7 +182,7 @@
                 component[5] = INNER_MATERIAL;  //InnerMaterial
                 break;
               case 'Webs':
-                component[0] = QUANTITY;        //Quantity
+                // component[0] = QUANTITY;        //Quantity
                 component[2] = 8.75;            //Width
                 component[3] = WIDTH - 1.5;     //Length
                 component[4] = THICK_BOX;       //Thick

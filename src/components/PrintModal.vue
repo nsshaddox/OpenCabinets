@@ -113,6 +113,7 @@
 .grid-container {
   max-width: 1200px;
   min-width: 750px;
+  padding: 5px 10px;
 }
 
 .button-set {
@@ -127,7 +128,7 @@
   align-items: center;
   font-weight: bold;
   color: rgb(0, 0, 0);
-  border: 2px solid rgb(0, 0, 0);
+  border: 1px solid rgb(0, 0, 0);
   border-radius: 0px;
   padding-left: 10px;
 }

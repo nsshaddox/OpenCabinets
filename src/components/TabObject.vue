@@ -30,7 +30,7 @@
           <CButton 
             style="padding-top: 0px; padding-bottom: 0px; text-align: start;" 
             @click="printButton" color="primary">
-            Print
+            Print Preview
           </CButton>
         </CNavItem>
       </CNav>
@@ -54,7 +54,8 @@
           @save-changes="saveChangesFromTemplatesTab"/>
       <!-- </KeepAlive> -->
     
-      <OptimizerView v-if="activeTab === 'OptimizerTab'" />
+      <OptimizerView v-if="activeTab === 'OptimizerTab'" 
+        :templates="projectTabTemplates"/>
     </div>
   </template>
 
