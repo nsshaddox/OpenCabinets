@@ -29,8 +29,8 @@
     },
     created () {
       this.partsList = this.createPartsList();
-      // this.groupList = this.createGroupList();
-      this.optimize()
+      this.groupList = this.createGroupList();
+      // this.optimize()
       console.log("Completed Tree: ", this.root)
       console.log("Number of remaining parts:", this.partsList.length)
       console.log("Parts:", this.partsList)
