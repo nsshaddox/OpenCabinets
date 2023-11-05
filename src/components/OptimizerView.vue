@@ -30,7 +30,9 @@
     created () {
       this.partsList = this.createPartsList();
       this.groupList = this.createGroupList();
-      // this.optimize()
+      this.optimize()
+
+      console.log("\n==== DONE =====")
       console.log("Completed Tree: ", this.root)
       console.log("Number of remaining parts:", this.partsList.length)
       console.log("Parts:", this.partsList)
@@ -39,58 +41,64 @@
     methods: {
       optimize() {
         this.root = this.createNode(48, 96, TYPES.ROOT, []);
-        this.recurse(this.root, this.partsList.length - 1)
+        this.recurse(this.root, this.groupList.length - 1)
       },
 
       recurse(root, index) {
-        console.log("\n====RECURSE CALLED====")
+        //at this point, this.partsList should be empty
+        console.log("\n==== RECURSE CALLED ====")
         console.log("numRecurse: ", ++this.numRecurse)
         console.log("root:", root)
-        console.log("partsList: ")
-        for (let part of this.partsList) {
-          console.log(part)
+        console.log("remaining parts: ")
+        for (let group of this.groupList) {
+          for (let part of group.parts) {
+            console.log(part)
+          }
         }
 
         if (this.numRecurse > 20) { return }
         // console.log("partsList:", this.partsList)
-        if (this.partsList.length == 0) { 
+        if (this.groupList.length == 0) { 
           console.log("FALLOFF")
           return 
         }
 
+        let length = this.groupList[index].length
+        let width = this.groupList[index].width
+
         //===== HORIZONTAL CUT =====
         if (root.type == TYPES.V_CUT) {
           console.log("Creating Horizontal Cut")
-          let length = this.partsList[index][INDEX.LENGTH]
-          let width = this.partsList[index][INDEX.WIDTH]
           let newIndex = index
           let remainingWidth = root.width
           let isGood = (length == root.length && width <= remainingWidth)
           
           while (isGood) {
-            console.log("Adding: ", this.partsList[newIndex][INDEX.NAME] )
-            let partNode = this.createNode(width, length, TYPES.H_CUT, null)
-            root.nodes.push(partNode)
+            for (let part of this.groupList[newIndex].parts) {
+              console.log("Adding: ", part[INDEX.NAME])
+              let partNode = this.createNode(part[INDEX.WIDTH], part[INDEX.LENGTH], TYPES.H_CUT, null)
+              root.nodes.push(partNode)
+            }
             
             remainingWidth -= width
             newIndex--
 
             if (newIndex < 0) { break }
 
-            width = this.partsList[newIndex][INDEX.WIDTH]
-            length = this.partsList[newIndex][INDEX.LENGTH]
+            width = this.groupList[newIndex].width
+            length = this.groupList[newIndex].length
             isGood = (length == root.length && width <= remainingWidth)
           }
 
           // create new list for partsList removing all used parts
-          this.partsList = [...this.partsList.slice(0, newIndex + 1), ...this.partsList.splice(index + 1)]
+          this.groupList = [...this.groupList.slice(0, newIndex + 1), ...this.groupList.splice(index + 1)]
           
           // create new node for the remining ammount, call recurse, and add it to the nodes list
           let rootNode = this.createNode(remainingWidth, root.length, TYPES.ROOT, [])
           
           console.log("rootNode: ", rootNode)
           
-          this.recurse(rootNode, this.partsList.length - 1) //remaining part
+          this.recurse(rootNode, this.groupList.length - 1) //remaining part
           root.nodes.push(rootNode)
           
         } 
@@ -98,25 +106,19 @@
         //===== VERTICAL CUT =====
         else {
           console.log("Creating Vertical Cut")
-          console.log(this.root)
-          // console.log("length:", INDEX.LENGTH)
-          // console.log("index: ", index)
-          let length = this.partsList[index][INDEX.LENGTH]
-          let width = this.partsList[index][INDEX.WIDTH]
           let i = index
+
           // find the index of the part that will fit
           while( i > -1 ) {
-            length = this.partsList[i][INDEX.LENGTH]
-            width = this.partsList[i][INDEX.WIDTH]
+            length = this.groupList[i].length
+            width = this.groupList[i].width
             if (length <= root.length && width <= root.width) { break }
             i--
           }
           
           // FALL OFF PIECE!!!
-          console.log("i:", i )
           if (i == -1) {
-            //root.type = TYPES.FALLOFF
-            console.log("FALLOFF")
+            console.log("FALLOFF PIECE")
             return // early return 
           }
           
@@ -127,7 +129,7 @@
           console.log("rootNode: ", rootNode)
           
           this.recurse(vertNode, i) // matching part
-          this.recurse(rootNode, this.partsList.length - 1)// remaining part
+          this.recurse(rootNode, this.groupList.length - 1)// remaining part
           
           root.nodes.push(vertNode)
           root.nodes.push(rootNode)
@@ -162,28 +164,29 @@
         return partsList
       },
 
-      // GROUPING WORKS!!
       createGroupList() {
         if (this.partsList.length == 0) return []
         
         let remainingWidth = 48
-        let groupList = [[]]
         let prevLength = this.partsList[this.partsList.length - 1][INDEX.LENGTH]
+        let groupList = [this.createGroup(0, prevLength, [])]
 
         while(this.partsList.length > 0) {
           let part = this.partsList.pop()
           remainingWidth -= part[INDEX.WIDTH]
 
           if (remainingWidth >= 0 && prevLength == part[INDEX.LENGTH]) {
-            groupList[groupList.length - 1].push(part)
+            //groupList[groupList.length - 1].push(part)
+            groupList[0].parts.push(part)
+            groupList[0].width += part[INDEX.WIDTH]
           } else {
             //create a new group and add the next part to it
             remainingWidth = 48 - part[INDEX.WIDTH]
-            groupList.push([part])
+            //groupList.push([part])
+            groupList.unshift(this.createGroup(part[INDEX.WIDTH], part[INDEX.LENGTH], [part]))
           }
 
           prevLength = part[INDEX.LENGTH]
-          //return groupList
         }
 
         console.log("groupList:", groupList)
@@ -199,6 +202,15 @@
           "nodes": nodes,
         }
         return node
+      },
+
+      createGroup(width, length, part) {
+        var group = {
+          "width": width,
+          "length": length,
+          "parts": part,
+        }
+        return group
       }
 
     },
