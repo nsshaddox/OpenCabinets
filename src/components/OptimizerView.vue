@@ -1,10 +1,5 @@
 <template>
-  <div v-for="template in templates" :key="template.Name">
-    <div v-for="row in template.Components" :key="row">
-      <!-- {{ row[1] }} -->
-    </div>
-  </div>
-
+  <div id="sheet1" class="less"></div>
 </template>
 
 <script>
@@ -25,6 +20,7 @@
         isOptimized: false,
         root: {},
         numRecurse: 0,
+        TYPES: TYPES,
       }
     },
     created () {
@@ -37,6 +33,11 @@
       console.log("Number of remaining parts:", this.partsList.length)
       console.log("Parts:", this.partsList)
       
+    },
+    mounted() {
+      const sheet1 = document.getElementById('sheet1')
+      const rect = sheet1.getBoundingClientRect()
+      this.createBox(this.root, rect.left, rect.top)
     },
     methods: {
       optimize() {
@@ -60,6 +61,7 @@
         // console.log("partsList:", this.partsList)
         if (this.groupList.length == 0) { 
           console.log("FALLOFF")
+          root.type = TYPES.FALLOFF
           return 
         }
 
@@ -76,7 +78,8 @@
           while (isGood) {
             for (let part of this.groupList[newIndex].parts) {
               console.log("Adding: ", part[INDEX.NAME])
-              let partNode = this.createNode(part[INDEX.WIDTH], part[INDEX.LENGTH], TYPES.H_CUT, null)
+              let partNode = this.createNode(part[INDEX.WIDTH], part[INDEX.LENGTH], TYPES.H_CUT, [])
+              partNode.name = part[INDEX.NAME]
               root.nodes.push(partNode)
             }
             
@@ -119,6 +122,7 @@
           // FALL OFF PIECE!!!
           if (i == -1) {
             console.log("FALLOFF PIECE")
+            root.type = TYPES.FALLOFF
             return // early return 
           }
           
@@ -152,7 +156,7 @@
 
         partsList.sort((a, b) => {
           // AREA
-          //return a[INDEX.WIDTH] * a[INDEX.LENGTH] - b[INDEX.WIDTH] * b[INDEX.LENGTH]
+          // return a[INDEX.WIDTH] * a[INDEX.LENGTH] - b[INDEX.WIDTH] * b[INDEX.LENGTH]
 
           // LENGTH > WIDTH
           if (a[INDEX.LENGTH] === b[INDEX.LENGTH]) {
@@ -191,28 +195,71 @@
 
         console.log("groupList:", groupList)
 
+        groupList.sort((a, b) => {
+          // AREA
+          return a.width * a.length - b.width * b.length
+        })
+
         return groupList
       },
 
       createNode(width, length, type, nodes){
-        var node = {
+        return {
           "width": width,
           "length": length,
           "type": type,
           "nodes": nodes,
+          "name": "",
         }
-        return node
       },
 
       createGroup(width, length, part) {
-        var group = {
+        return {
           "width": width,
           "length": length,
           "parts": part,
         }
-        return group
-      }
+      },
 
+      createBox(root, x, y) {
+        if (root.width === 0 || root.length === 0) {return}
+
+        const boxElement = document.getElementById('sheet1')
+        const newBox = document.createElement('div')
+
+        console.log(x,y,boxElement,newBox)
+
+        newBox.style.position = 'absolute'
+        newBox.textContent = "" + root.width + "," + root.length + " " + root.name
+        newBox.style.left = x + 'px'
+        newBox.style.top = y + 'px'
+        newBox.style.width = root.length*8 + 'px'
+        newBox.style.height = root.width*8 + 'px'
+        newBox.style.border = '1px solid black'
+        newBox.style.backgroundColor = 'lightgray' // Adjust color as needed
+
+        boxElement.appendChild(newBox);
+
+        // IF HORIZONTAL OR FALLOFF
+        if (root.type === TYPES.FALLOFF) {
+          newBox.style.backgroundColor = 'gray' // Adjust color as needed
+        }
+        if (root.nodes.length == 0) { return }
+
+        // IF ROOT
+        if (root.type === TYPES.ROOT) {
+          this.createBox(root.nodes[0], x, y)
+          this.createBox(root.nodes[1], x+root.nodes[0].length*8, y)
+          return
+        }
+
+        // IF VERTICAL
+        let newy = y
+        for (let i = 0; i < root.nodes.length; i++) {
+          this.createBox(root.nodes[i], x, newy)
+          newy += root.nodes[i].width*8
+        }
+      }
     },
   }
 </script>
