@@ -29,7 +29,7 @@
         <CNavItem>
           <CButton 
             style="padding-top: 0px; padding-bottom: 0px; text-align: start;" 
-            @click="printButton" color="primary">
+            @click="setPrintData" color="primary">
             Print Preview
           </CButton>
         </CNavItem>
@@ -56,6 +56,7 @@
     
       <OptimizerView v-if="activeTab === 'OptimizerTab'" 
         :templates="projectTabTemplates"/>
+        
     </div>
   </template>
 
@@ -93,12 +94,13 @@
       closePrint() {
         this.printData.isPrinting = false;
       },
-      printButton() {
-        console.log("testing");
+      setPrintData() {
         if (this.activeTab === 'TemplatesTab') {
           this.printData.printableTemplates = this.templateTabTemplates;
-        } else {
+        } else if (this.activeTab === 'ProjectTab') {
           this.printData.printableTemplates = this.projectTabTemplates;
+        } else {
+          this.printData.printableTemplates = []
         }
         this.printData.isPrinting = true;
       },

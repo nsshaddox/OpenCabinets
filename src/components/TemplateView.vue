@@ -48,7 +48,6 @@
   } from '@coreui/vue';
 
   import EditTemplateModal from './EditTemplateModal.vue'
-  // import PrintModal from './PrintModal.vue'
 
   export default {
     name: "TemplatesView",
@@ -74,6 +73,13 @@
         },
       }
     },
+    created () {
+      if (this.isProjectTab) {
+        this.buttonColor = 'secondary'
+      } else {
+        this.buttonColor = 'dark'
+      }
+    },
     emits: [
       'remove-template-p',
       'remove-template-t',
@@ -89,7 +95,6 @@
       CButton,
       CButtonGroup,
       EditTemplateModal,
-      // PrintModal,
     },
     methods: {
       /**

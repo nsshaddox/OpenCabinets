@@ -1,5 +1,7 @@
 <template>
-  <div id="sheet1" class="less"></div>
+  <div id="optimizer" class="sheet-flex"> 
+    <h4>Material: {{ this.material }} x{{ this.roots.length }}</h4> 
+  </div>
 </template>
 
 <script>
@@ -18,9 +20,11 @@
         partsList: [],
         groupList: [],
         isOptimized: false,
-        root: {},
+        roots: [],
         numRecurse: 0,
         TYPES: TYPES,
+        debug: false,
+        material: 'Melamine',
       }
     },
     created () {
@@ -28,39 +32,60 @@
       this.groupList = this.createGroupList();
       this.optimize()
 
-      console.log("\n==== DONE =====")
-      console.log("Completed Tree: ", this.root)
-      console.log("Number of remaining parts:", this.partsList.length)
-      console.log("Parts:", this.partsList)
+      if (this.debug){
+        console.log("\n==== DONE =====")
+        console.log("Completed Tree: ", this.root)
+        console.log("Number of remaining parts:", this.partsList.length)
+        console.log("Parts:", this.partsList)
+      }
       
     },
     mounted() {
-      const sheet1 = document.getElementById('sheet1')
-      const rect = sheet1.getBoundingClientRect()
-      this.createBox(this.root, rect.left, rect.top)
+      const optimizer = document.getElementById('optimizer')
+      const rect = optimizer.getBoundingClientRect()
+      const spacer = 400
+      let itr = 0
+      for (let root of  this.roots) {
+        //create a new div
+        const sheet = document.createElement('div')
+        sheet.className = 'sheet'
+        sheet.innerHTML = '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>'
+        optimizer.appendChild(sheet)
+        this.createBox(root, rect.left, rect.top + (itr * spacer) + 40)
+        itr += 1
+      }
     },
     methods: {
       optimize() {
-        this.root = this.createNode(48, 96, TYPES.ROOT, []);
-        this.recurse(this.root, this.groupList.length - 1)
+        while (this.groupList.length > 0){
+
+          let root = this.createNode(48, 96, TYPES.ROOT, []);
+          console.log(this.groupList.length)
+          this.recurse(root, this.groupList.length - 1)
+          this.roots.push(root)
+          console.log(this.groupList.length)
+        }
       },
 
       recurse(root, index) {
         //at this point, this.partsList should be empty
-        console.log("\n==== RECURSE CALLED ====")
-        console.log("numRecurse: ", ++this.numRecurse)
-        console.log("root:", root)
-        console.log("remaining parts: ")
-        for (let group of this.groupList) {
-          for (let part of group.parts) {
-            console.log(part)
+        if (this.debug) {
+          console.log("\n==== RECURSE CALLED ====")
+          console.log("numRecurse: ", ++this.numRecurse)
+          console.log("root:", root)
+          console.log("remaining parts: ")
+          for (let group of this.groupList) {
+            for (let part of group.parts) {
+              console.log(part)
+            }
           }
         }
+
 
         if (this.numRecurse > 20) { return }
         // console.log("partsList:", this.partsList)
         if (this.groupList.length == 0) { 
-          console.log("FALLOFF")
+          if (this.debug) console.log("FALLOFF")
           root.type = TYPES.FALLOFF
           return 
         }
@@ -70,14 +95,14 @@
 
         //===== HORIZONTAL CUT =====
         if (root.type == TYPES.V_CUT) {
-          console.log("Creating Horizontal Cut")
+          if (this.debug) console.log("Creating Horizontal Cut")
           let newIndex = index
           let remainingWidth = root.width
           let isGood = (length == root.length && width <= remainingWidth)
           
           while (isGood) {
             for (let part of this.groupList[newIndex].parts) {
-              console.log("Adding: ", part[INDEX.NAME])
+              if (this.debug) console.log("Adding: ", part[INDEX.NAME])
               let partNode = this.createNode(part[INDEX.WIDTH], part[INDEX.LENGTH], TYPES.H_CUT, [])
               partNode.name = part[INDEX.NAME]
               root.nodes.push(partNode)
@@ -99,7 +124,7 @@
           // create new node for the remining ammount, call recurse, and add it to the nodes list
           let rootNode = this.createNode(remainingWidth, root.length, TYPES.ROOT, [])
           
-          console.log("rootNode: ", rootNode)
+          if (this.debug) console.log("rootNode: ", rootNode)
           
           this.recurse(rootNode, this.groupList.length - 1) //remaining part
           root.nodes.push(rootNode)
@@ -108,7 +133,7 @@
         
         //===== VERTICAL CUT =====
         else {
-          console.log("Creating Vertical Cut")
+          if (this.debug) console.log("Creating Vertical Cut")
           let i = index
 
           // find the index of the part that will fit
@@ -121,7 +146,7 @@
           
           // FALL OFF PIECE!!!
           if (i == -1) {
-            console.log("FALLOFF PIECE")
+            if (this.debug) console.log("FALLOFF PIECE")
             root.type = TYPES.FALLOFF
             return // early return 
           }
@@ -129,8 +154,10 @@
           let vertNode = this.createNode(root.width, length, TYPES.V_CUT, [])
           let rootNode = this.createNode(root.width, root.length-length, TYPES.ROOT, [])
           
-          console.log("vertNode: ", vertNode)
-          console.log("rootNode: ", rootNode)
+          if (this.debug){
+            console.log("vertNode: ", vertNode)
+            console.log("rootNode: ", rootNode)
+          }
           
           this.recurse(vertNode, i) // matching part
           this.recurse(rootNode, this.groupList.length - 1)// remaining part
@@ -146,7 +173,7 @@
         console.log(this.templates)
         for (var template of this.templates) {
           for(var part of template.Components) {
-            if (part[INDEX.QUAN] > 0 && part[INDEX.MATERIAL] === "Melamine" && part[INDEX.THICK] === 0.75) {
+            if (part[INDEX.QUAN] > 0 && part[INDEX.MATERIAL] === this.material && part[INDEX.THICK] === 0.75) {
               for (let i = 0; i < part[INDEX.QUAN]; i++ ){
                 partsList.push(part);
               }
@@ -193,7 +220,7 @@
           prevLength = part[INDEX.LENGTH]
         }
 
-        console.log("groupList:", groupList)
+        if (this.debug) console.log("groupList:", groupList)
 
         groupList.sort((a, b) => {
           // AREA
@@ -224,10 +251,10 @@
       createBox(root, x, y) {
         if (root.width === 0 || root.length === 0) {return}
 
-        const boxElement = document.getElementById('sheet1')
+        const boxElement = document.getElementById('optimizer')
         const newBox = document.createElement('div')
 
-        console.log(x,y,boxElement,newBox)
+        if (this.debug) console.log(x,y,boxElement,newBox)
 
         newBox.style.position = 'absolute'
         newBox.textContent = "" + root.width + "," + root.length + " " + root.name
