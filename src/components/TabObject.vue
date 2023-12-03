@@ -56,7 +56,7 @@
     
       <OptimizerView v-if="activeTab === 'OptimizerTab'" 
         :templates="projectTabTemplates"/>
-        
+
     </div>
   </template>
 
@@ -101,6 +101,8 @@
           this.printData.printableTemplates = this.projectTabTemplates;
         } else {
           this.printData.printableTemplates = []
+          window.print()
+          return
         }
         this.printData.isPrinting = true;
       },
